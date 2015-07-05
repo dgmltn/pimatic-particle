@@ -1,8 +1,8 @@
 pimatic-particle
 ================
 
-Pimatic plugin to interface with ([Particle][1]) connected devices. You must 
-([generate an auth token][2]) manually before using this plugin.
+Pimatic plugin to interface with [Particle][1] connected devices. You must 
+[generate an auth token][2] manually before using this plugin.
 
 Plugin:
 -------
@@ -18,7 +18,7 @@ ParticlePresenseSensor:
 ----------------------
 
 This Pimatic device simply listens for events published by your Particle device
-(see ([publish][3])). When an event is detected, this Pimatic device is "present"
+(see [Spark.publish()][3]). When an event is detected, this Pimatic device is "present"
 for the amount of time as configured by resetTime.
 
 ```JSON
