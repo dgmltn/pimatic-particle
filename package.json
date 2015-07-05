@@ -1,0 +1,41 @@
+{
+  "name": "pimatic-particle",
+  "description": "Creates a Pimatic device from a Particle device",
+  "author": {
+    "name": "Doug Melton",
+    "email": "what@supbro.com"
+  },
+  "main": "particle",
+  "files": [
+    "particle.coffee",
+    "README.md",
+    "particle-config-schema.coffee",
+    "device-config-schema.coffee"
+  ],
+  "version": "0.0.1",
+  "homepage": "https://github.com/dgmltn/pimatic-particle",
+  "configSchema": "particle-config-schema.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dgmltn/pimatic-particle.git"
+  },
+  "keywords": [
+    "pimatic",
+    "particle"
+  ],
+  "bugs": {
+    "url": "https://github.com/dgmltn/pimatic-particle/issues"
+  },
+  "maintainers": [
+    {
+      "name": "dgmltn",
+      "email": "what@supbro.com"
+    }
+  ],
+  "dependencies": {
+    "eventsource": "0.1.6"
+  }
+}
