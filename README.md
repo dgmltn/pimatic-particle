@@ -9,8 +9,8 @@ Plugin:
 
 ```JSON
 {
-    'plugin': 'particle',
-    'auth': '[my particle auth token]'
+    "plugin": "particle",
+    "auth": "[my particle auth token]"
 }
 ```
 
@@ -23,15 +23,15 @@ for the amount of time as configured by resetTime.
 
 ```JSON
 {
-    'id': 'particle-motion-office',
-    'class': 'ParticlePresenceSensor',
-    'name': 'Office',
-    'eventType': 'motion-detected',
-    'autoReset': true,
-    'resetTime': 60000
+    "id": "particle-motion-office",
+    "class": "ParticlePresenceSensor",
+    "name": "Office",
+    "eventType": "motion-detected",
+    "autoReset": true,
+    "resetTime": 60000
 }
 ```
 
-[1] http://particle.io
-[2] http://docs.particle.io/photon/api/#authentication-generate-a-new-access-token
-[3] http://docs.particle.io/core/firmware/#spark-publish
+ [1]: http://particle.io
+ [2]: http://docs.particle.io/photon/api/#authentication-generate-a-new-access-token
+ [3]: http://docs.particle.io/core/firmware/#spark-publish
