@@ -26,9 +26,28 @@ for the amount of time as configured by resetTime.
     "id": "particle-motion-office",
     "class": "ParticlePresenceSensor",
     "name": "Office",
+    "coreid": "1234567890abcdef",
     "eventType": "motion-detected",
     "autoReset": true,
     "resetTime": 60000
+}
+```
+
+ParticleVariable:
+-----------------
+
+This Pimatic device queries your Particle device for a variable that you have
+setup, at a fixed rate. The interval time is specified in ms.
+
+```JSON
+{
+    "id": "particle-variable-garage",
+    "class": "ParticleVariable",
+    "name": "Garage Door State",
+    "coreid": "1234567890abcdef",
+    "dataType": "string",
+    "variable": "state",
+    "intervalMs": 60000
 }
 ```
 
