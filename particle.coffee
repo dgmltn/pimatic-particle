@@ -37,9 +37,10 @@ module.exports = (env) ->
       @_triggerAutoReset()
       super()
 
-    _eventListener: (e) ->
+    # Use the fat arrow here for access to @changePresenceTo method
+    _eventListener: (e) =>
       console.log JSON.stringify(e)
-      #TODO: @changePresenceTo(yes)
+      @changePresenceTo(yes)
       return
 
     changePresenceTo: (presence) ->
