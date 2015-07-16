@@ -28,3 +28,6 @@ node_modules
 
 # coffeescript compiled files
 .js
+
+# private-key containing configuration file for test.js
+configuration.json

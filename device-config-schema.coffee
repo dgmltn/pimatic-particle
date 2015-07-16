@@ -4,6 +4,9 @@ module.exports ={
     title: "ParticlePresenceSensor config options"
     type: "object"
     properties: 
+      coreid:
+        description: "The id of the particular Particle core device"
+        format: "string"
       eventType:
         description: "Value of 'type' field in Particle server event (e.g. 'motion-detected')"
         format: "string"
@@ -14,6 +17,21 @@ module.exports ={
       resetTime:
         description: "Time after that the presence value is reseted to absent."
         type: "integer"
+        default: 60000
+  }
+  ParticleVariable: {
+    title: "ParticleVariable config options"
+    type: "object"
+    properties:
+      coreid:
+        description: "The id of the particular Particle core device"
+        format: "string"
+      variable:
+        description: "The name of the Particle device variable to retrieve"
+        format: "string"
+      intervalMs:
+        description: "Amount of time (in MS) to wait before trying a second query"
+        format: "integer"
         default: 60000
   }
 }

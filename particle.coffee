@@ -1,17 +1,24 @@
 module.exports = (env) ->
 
-  API_URL = 'https://api.spark.io/v1/devices/events'
+  EVENTS_URL = 'https://api.spark.io/v1/devices/events'
 
   Promise = env.require 'bluebird'
 
   EventSource = require 'eventsource'
 
-  class Particle extends env.plugins.Plugin
+  Particle = require 'spark'
+
+  #############################################################################
+  # PiMarticle
+  #############################################################################
+
+  class PiMarticle extends env.plugins.Plugin
     init: (app, @framework, @config) =>
       deviceConfigDef = require("./device-config-schema")
 
-      esConfig = headers: 'Authorization': 'Bearer ' + config.auth
-      es = new EventSource(API_URL, esConfig)
+      authToken = config.auth
+      esConfig = headers: 'Authorization': 'Bearer ' + authToken
+      es = new EventSource(EVENTS_URL, esConfig)
       es.onerror = ->
         console.log 'ERROR!'
         return
@@ -20,6 +27,15 @@ module.exports = (env) ->
         configDef: deviceConfigDef.ParticlePresenceSensor,
         createCallback: (config, lastState) => new ParticlePresenceSensor(config, es, lastState)
       })
+
+      @framework.deviceManager.registerDeviceClass("ParticleVariable", {
+        configDef: deviceConfigDef.ParticleVariable,
+        createCallback: (config, lastState) => new ParticleVariable(config, authToken, lastState)
+      })
+
+  #############################################################################
+  # ParticlePresenceSensor
+  #############################################################################
 
   class ParticlePresenceSensor extends env.devices.PresenceSensor
     actions:
@@ -31,6 +47,7 @@ module.exports = (env) ->
     constructor: (@config, es, lastState) ->
       @name = config.name
       @id = config.id
+      @coreid = config.coreid
       @eventType = config.eventType
       @_presence = lastState?.presence?.value or off
       es.addEventListener @eventType, @_eventListener, false
@@ -40,7 +57,8 @@ module.exports = (env) ->
     # Use the fat arrow here for access to @changePresenceTo method
     _eventListener: (e) =>
       console.log JSON.stringify(e)
-      @changePresenceTo(yes)
+      if !@coreid || @coreid == e.coreid
+        @changePresenceTo(yes)
       return
 
     changePresenceTo: (presence) ->
@@ -56,5 +74,53 @@ module.exports = (env) ->
     _resetPresence: =>
       @_setPresence(no)
 
-  plugin = new Particle
+
+  #############################################################################
+  # ParticleVariable
+  #############################################################################
+
+  class ParticleVariable extends env.devices.Sensor
+    attributes:
+      value:
+        description: "The current value of the Variable"
+        type: "string"
+
+    constructor: (@config, accessToken, lastState) ->
+      @accessToken = accessToken
+      @name = config.name
+      @id = config.id
+      @coreid = config.coreid
+      @intervalMs = config.intervalMs
+      @variable = config.variable
+      @_value = lastState?.value?.value or ''
+      super()
+
+      @requestData()
+      setInterval( =>
+        @requestData()
+      , @intervalMs
+      )
+
+    # Returns a promise that will be fulfilled with the value
+    getValue: -> Promise.resolve(@_value)
+
+    _setValue: (value) ->
+      unless @_value is value
+        @_value = value
+        @emit "value", value
+
+    requestData: () =>
+      creds = accessToken: @accessToken
+      Particle.login(creds).then((token) =>
+        #console.log 'Logged in: ', token
+        Particle.getVariable @coreid, @variable
+      ).then ((data) =>
+        #console.log @variable + ' retrieved successfully: ' + data.result
+        @_setValue data.result
+      ), (err) ->
+        console.log 'Particle error:', err
+
+  #############################################################################
+    
+  plugin = new PiMarticle
   return plugin

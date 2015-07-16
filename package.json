@@ -36,6 +36,7 @@
     }
   ],
   "dependencies": {
-    "eventsource": "0.1.6"
+    "eventsource": "0.1.6",
+    "spark": "~0.5.9"
   }
 }

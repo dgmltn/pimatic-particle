@@ -15,21 +15,38 @@ Plugin:
 ```
 
 ParticlePresenseSensor:
-----------------------
+-----------------------
 
 This Pimatic device simply listens for events published by your Particle device
-(see [Spark.publish()][3]). When an event is detected, this Pimatic device is "present"
-for the amount of time as configured by resetTime.
+(see [publish][3]). When an event is detected, this Pimatic device is "present"
+for the amount of time as configured by resetTime. deviceId is optional here.
 
 ```JSON
 {
     "id": "particle-motion-office",
     "class": "ParticlePresenceSensor",
+    "coreid": "1234567890abcdef",
     "name": "Office",
     "coreid": "1234567890abcdef",
     "eventType": "motion-detected",
     "autoReset": true,
-    "resetTime": 60000
+    "resetTime": 60000,
+}
+```
+
+ParticleVariable:
+-----------------
+
+This Pimatic device queries your Particle device for a variable that you have
+setup, at a fixed rate. The interval time is specified in ms.
+
+```JSON
+{
+    "id": "particle-temperature",
+    "class": "ParticleVariable",
+    "coreid": "1234567890abcdef",
+    "name": "Office Temperature",
+    "intervalMs": 60000
 }
 ```
 
