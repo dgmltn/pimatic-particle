@@ -6,7 +6,7 @@ module.exports = (env) ->
 
   EventSource = require 'eventsource'
 
-  Particle = require 'spark'
+  ParticleLib = require 'spark'
 
   #############################################################################
   # PiMarticle
@@ -16,12 +16,16 @@ module.exports = (env) ->
     init: (app, @framework, @config) =>
       deviceConfigDef = require("./device-config-schema")
 
-      authToken = config.auth
-      esConfig = headers: 'Authorization': 'Bearer ' + authToken
+      esConfig = headers: 'Authorization': 'Bearer ' + config.auth
       es = new EventSource(EVENTS_URL, esConfig)
       es.onerror = ->
         console.log 'ERROR!'
         return
+
+      creds = accessToken: config.auth
+      ParticleLib.login creds
+      .then (token) =>
+        console.log 'Logged in: ', token
 
       @framework.deviceManager.registerDeviceClass("ParticlePresenceSensor", {
         configDef: deviceConfigDef.ParticlePresenceSensor,
@@ -30,7 +34,7 @@ module.exports = (env) ->
 
       @framework.deviceManager.registerDeviceClass("ParticleVariable", {
         configDef: deviceConfigDef.ParticleVariable,
-        createCallback: (config, lastState) => new ParticleVariable(config, authToken, lastState)
+        createCallback: (config, lastState) => new ParticleVariable(config, lastState)
       })
 
   #############################################################################
@@ -85,8 +89,7 @@ module.exports = (env) ->
         description: "The current value of the Variable"
         type: "string"
 
-    constructor: (@config, accessToken, lastState) ->
-      @accessToken = accessToken
+    constructor: (@config, lastState) ->
       @name = config.name
       @id = config.id
       @coreid = config.coreid
@@ -110,12 +113,9 @@ module.exports = (env) ->
         @emit "value", value
 
     requestData: () =>
-      creds = accessToken: @accessToken
-      Particle.login(creds).then((token) =>
-        #console.log 'Logged in: ', token
-        Particle.getVariable @coreid, @variable
-      ).then ((data) =>
-        #console.log @variable + ' retrieved successfully: ' + data.result
+      ParticleLib.getVariable @coreid, @variable
+      .then ((data) =>
+        console.log @variable + ' retrieved successfully: ' + data.result
         @_setValue data.result
       ), (err) ->
         console.log 'Particle error:', err
