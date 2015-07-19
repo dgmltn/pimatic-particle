@@ -74,19 +74,35 @@ module.exports = (env) ->
   #############################################################################
 
   class ParticleVariable extends env.devices.Sensor
-    attributes:
-      value:
-        description: "The current value of the Variable"
-        type: "string"
-
     constructor: (@config, lastState) ->
+      valueAttribute = {
+        description: 'The current value of the Variable'
+        type: 'string'
+      }
+
+      if config.type? and config.type.length > 0
+        valueAttribute.type = config.type
+
+      if config.unit? and config.unit.length > 0
+        valueAttribute.unit = config.unit
+
+      if config.acronym?
+        valueAttribute.acronym = config.acronym
+
       @name = config.name
       @id = config.id
       @coreid = config.coreid
       @intervalMs = config.intervalMs
       @variable = config.variable
-      @_value = lastState?.value?.value or ''
+
+      if valueAttribute.type == 'number'
+        @_value = parseFloat lastState?.value?.value
+      else
+        @_value = lastState?.value?.value
+
+      @addAttribute('value', valueAttribute)
       super()
+
 
       @requestData()
       setInterval( =>
@@ -105,10 +121,9 @@ module.exports = (env) ->
     requestData: () =>
       Particle.getVariable @coreid, @variable
       .then ((data) =>
-        env.logger.debug @variable + ' retrieved successfully: ' + data.result
         @_setValue data.result
       ), (err) ->
-        env.logger.debug 'getVariable error:', err
+        env.logger.debug 'Particle.getVariable error:', err
 
   #############################################################################
     

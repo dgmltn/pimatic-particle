@@ -33,5 +33,17 @@ module.exports ={
         description: "Amount of time (in MS) to wait before trying a second query"
         format: "integer"
         default: 60000
+      type:
+        description: "The variable type returned from Particle: 'string' or 'number'"
+        format: "string"
+        default: "string"
+      unit:
+        description: "Unit represented by this variable. Only valid if type == 'number'"
+        format: "string"
+        default: ""
+      acronym:
+        description: "Acronym/label of this variable."
+        format: "string"
+        default: ""
   }
 }
