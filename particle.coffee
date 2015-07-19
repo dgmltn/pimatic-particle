@@ -27,6 +27,11 @@ module.exports = (env) ->
         createCallback: (config, lastState) => new ParticleVariable(config, lastState)
       })
 
+      @framework.deviceManager.registerDeviceClass("ParticleButtons", {
+        configDef: deviceConfigDef.ParticleButtons,
+        createCallback: (config, lastState) => new ParticleButtons(config, lastState)
+      })
+
   #############################################################################
   # ParticlePresenceSensor
   #############################################################################
@@ -124,6 +129,34 @@ module.exports = (env) ->
         @_setValue data.result
       ), (err) ->
         env.logger.debug 'Particle.getVariable error:', err
+
+
+  #############################################################################
+  # ParticleButtons
+  #############################################################################
+
+  class ParticleButtons extends env.devices.ButtonsDevice
+
+    constructor: (@config, lastState) ->
+      @coreid = config.coreid
+      super(@config)
+
+    buttonPressed: (buttonId) =>
+      for b in @config.buttons
+        if b.id is buttonId
+          @_lastPressedButton = b.id
+          @emit 'button', b.id
+          return @callFunction b.id, b.params
+      throw new Error("No button with the id #{buttonId} found")
+
+    callFunction: (functionName, funcParam) =>
+      env.logger.debug "Particle: callFunction: " + functionName + " " + funcParam
+      Particle.callFunction @coreid, functionName, funcParam
+      .then ((data) =>
+        env.logger.debug "Particle: callFunction result: ", data
+        # @_setValue data.return_value
+      ), (err) ->
+        env.logger.debug 'Particle.callFunction error:', err
 
   #############################################################################
     

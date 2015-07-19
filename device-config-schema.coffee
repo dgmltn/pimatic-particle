@@ -46,4 +46,32 @@ module.exports ={
         format: "string"
         default: ""
   }
+  ParticleButtons: {
+    title: "ParticleButtons config options"
+    type: "object"
+    properties:
+      coreid:
+        description: "The id of the particular Particle core device"
+        format: "string"
+      buttons:
+        description: "Buttons to display"
+        type: "array"
+        default: []
+        format: "table"
+        items:
+          type: "object"
+          properties:
+            id:
+              description: "Id must match the name of the function of the Particle device"
+              type: "string"
+            text:
+              type: "string"
+            confirm:
+              description: "Ask the user to confirm the button press"
+              type: "boolean"
+              default: false
+            params:
+              description: "Parameters to send to the Particle device along with the callFunction"
+              type: "string"
+  }
 }

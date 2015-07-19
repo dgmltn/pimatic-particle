@@ -50,6 +50,38 @@ setup, at a fixed rate. The interval time is specified in ms.
 }
 ```
 
+ParticleButtons:
+----------------
+
+This Pimatic device provides access to one or more function calls on your
+Particle device, via a Pimatic ButtonsDevice device.
+
+```JSON
+{
+    "id": "particle-garage-door-buttons",
+    "class": "ParticleButtons",
+    "name": "Garage Door Buttons",
+    "coreid": "1234567890abcdef",
+    "buttons": [
+        {
+          "id": "open",
+          "text": "open",
+          "params": "x"
+        },
+        {
+          "id": "close",
+          "text": "close",
+          "params": "x"
+        },
+        {
+          "id": "toggle",
+          "text": "toggle",
+          "params": "x"
+        }
+    ]
+}
+```
+
  [1]: http://particle.io
  [2]: http://docs.particle.io/photon/api/#authentication-generate-a-new-access-token
  [3]: http://docs.particle.io/core/firmware/#spark-publish
