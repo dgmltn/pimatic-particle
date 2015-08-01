@@ -52,13 +52,20 @@ module.exports = (env) ->
       super()
 
       @_triggerAutoReset()
-      Particle.getEventStream @eventType, @coreid, @_eventListener
+      @_openStream()
+
+    # Listen to events
+    _openStream: ->
+      env.logger.debug 'Particle.getEventStream opening'
+      req = Particle.getEventStream @eventType, @coreid, @_eventListener
+      req.on 'end', ->
+        env.logger.warn 'Particle.getEventStream ended. Resopening in 3s'
+        setTimeout @_openStream, 3000
 
     # Use the fat arrow here for access to @changePresenceTo method
     _eventListener: (e) =>
       env.logger.debug JSON.stringify(e)
       @changePresenceTo(yes)
-      return
 
     changePresenceTo: (presence) ->
       @_setPresence(presence)

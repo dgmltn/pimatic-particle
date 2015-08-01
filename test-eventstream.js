@@ -23,9 +23,17 @@ var eventStreamHandler = function(data) {
   console.log("Event: ", data);
 };
 
+var openStream = function() {
+  const req = spark.getEventStream(false, config.coreid, eventStreamHandler);
+  req.on('end', function() {
+    console.warn("Spark event stream ended! re-opening in 3 seconds...");
+    setTimeout(openStream, 3 * 1000);
+  });
+}
+
 spark.login({accessToken: token}).then(function(token) {
   console.log("Testing getEventStream...");
-  spark.getEventStream(false, config.coreid, eventStreamHandler);
+  openStream();
 }, function(err) {
   console.log('spark error:', err);
 });
